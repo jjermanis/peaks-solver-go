@@ -2,14 +2,16 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
 func main() {
-	PlayGame()
+	possibleAnswers := InitPossibleAnswers()
+	PlayGame(possibleAnswers)
 }
 
-func PlayGame() {
+func PlayGame(possibleAnswers []string) {
 	fmt.Println("Welcome to peaks-solver-go. This program will help you solve Wordle Peaks puzzles.")
 	fmt.Println("To use, guess what this program suggests. Then, let this program know the result.")
 	fmt.Println("Enter the five colors from the result. G for green, B for blue, and O for orange.")
@@ -17,8 +19,8 @@ func PlayGame() {
 	var currGuess, result string
 
 	for i := 0; i < 6; i++ {
-		// TODO implement the logic got best guess
-		currGuess = "MINOR"
+		// TODO implement the logic for best guess
+		currGuess = possibleAnswers[0]
 		fmt.Println("Please guess:", currGuess)
 		result = PromptResult()
 		if result == "GGGGG" {
@@ -56,4 +58,14 @@ func IsValidResult(r string) bool {
 		}
 	}
 	return true
+}
+
+func InitPossibleAnswers() []string {
+	bytes, err := os.ReadFile("possibleAnswers.txt")
+	if err != nil {
+		fmt.Print(err)
+		return nil
+	}
+	result := strings.Split(string(bytes), ",")
+	return result
 }
