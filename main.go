@@ -27,6 +27,7 @@ func PlayGame(possibleAnswers []string) {
 			fmt.Println("Congrats!")
 			return
 		}
+		possibleAnswers = UpdateFromResult(possibleAnswers, currGuess, result)
 	}
 	fmt.Println("Looks like you ran out of guesses. My fault.")
 }
@@ -68,4 +69,39 @@ func InitPossibleAnswers() []string {
 	}
 	result := strings.Split(string(bytes), ",")
 	return result
+}
+
+func UpdateFromResult(currAnswers []string, guess string, result string) []string {
+	var newAnswers []string
+	currAnswerCount := len(currAnswers)
+	for i := 0; i < currAnswerCount; i++ {
+		var currWord = currAnswers[i]
+		if WordFollowsResult(currWord, guess, result) {
+			newAnswers = append(newAnswers, currWord)
+		}
+	}
+	return newAnswers
+}
+
+func WordFollowsResult(word string, guess string, result string) bool {
+	for i := 0; i < 5; i++ {
+		currResult := result[i]
+		currWord := word[i]
+		currGuess := guess[i]
+
+		if currResult == 'G' {
+			if currWord != currGuess {
+				return false
+			}
+		} else if currResult == 'B' {
+			if currWord >= currGuess {
+				return false
+			}
+		} else if currResult == 'O' {
+			if currWord <= currGuess {
+				return false
+			}
+		}
+	}
+	return true
 }
