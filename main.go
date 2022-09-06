@@ -19,8 +19,7 @@ func PlayGame(state GameState) {
 	var currGuess, result string
 
 	for i := 0; i < 6; i++ {
-		// TODO implement the logic for best guess
-		currGuess = state.possibleAnswers[0]
+		currGuess = state.bestGuess
 		fmt.Println("Please guess:", currGuess)
 		result = PromptResult()
 		if result == "GGGGG" {

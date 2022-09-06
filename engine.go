@@ -8,6 +8,9 @@ import (
 
 type GameState struct {
 	possibleAnswers []string
+	bestGuess       string
+	lowestLetters   [5]byte
+	highestLetters  [5]byte
 }
 
 func (state *GameState) initPossibleAnswers(filename string) {
@@ -43,8 +46,41 @@ func isWordPossibleAnswer(word string, guess string, result string) bool {
 	return true
 }
 
+func (state *GameState) updateBestGuess() {
+	bestScore := 999999
+	var bestGuess string
+	currAnswerCount := len(state.possibleAnswers)
+	for i := 0; i < currAnswerCount; i++ {
+		var currGuess = state.possibleAnswers[i]
+		var currScore = state.scoreGuess(currGuess)
+		if currScore < bestScore {
+			bestScore = currScore
+			bestGuess = currGuess
+		}
+	}
+	state.bestGuess = bestGuess
+}
+
+func (state GameState) scoreGuess(guess string) int {
+	var score = 0
+	for i := 0; i < 5; i++ {
+		currTarget := (state.highestLetters[i]-state.lowestLetters[i])/2 + state.lowestLetters[i]
+		currValue := int(currTarget) - int(guess[i])
+		if currValue < 0 {
+			currValue = -currValue
+		}
+		score += currValue
+	}
+	return score
+}
+
 func (state *GameState) Initialize(filename string) {
 	state.initPossibleAnswers(filename)
+	for i := 0; i < 5; i++ {
+		state.lowestLetters[i] = 'a'
+		state.highestLetters[i] = 'z'
+	}
+	state.updateBestGuess()
 }
 
 func (state *GameState) UpdateAfterGuess(guess string, result string) {
@@ -56,5 +92,18 @@ func (state *GameState) UpdateAfterGuess(guess string, result string) {
 			newAnswers = append(newAnswers, currWord)
 		}
 	}
+	for i := 0; i < 5; i++ {
+		currResult := result[i]
+		currGuess := guess[i]
+		if currResult == 'G' {
+			state.lowestLetters[i] = currGuess
+			state.highestLetters[i] = currGuess
+		} else if currResult == 'B' {
+			state.lowestLetters[i] = currGuess + 1
+		} else if currResult == 'O' {
+			state.highestLetters[i] = currGuess - 1
+		}
+	}
 	state.possibleAnswers = newAnswers
+	state.updateBestGuess()
 }
