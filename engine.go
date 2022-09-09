@@ -99,9 +99,9 @@ func (state *GameState) UpdateAfterGuess(guess string, result string) {
 			state.lowestLetters[i] = currGuess
 			state.highestLetters[i] = currGuess
 		} else if currResult == 'B' {
-			state.lowestLetters[i] = currGuess + 1
-		} else if currResult == 'O' {
 			state.highestLetters[i] = currGuess - 1
+		} else if currResult == 'O' {
+			state.lowestLetters[i] = currGuess + 1
 		}
 	}
 	state.possibleAnswers = newAnswers
