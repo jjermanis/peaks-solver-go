@@ -27,6 +27,16 @@ func PlayGame(state GameState) {
 			return
 		}
 		state.UpdateAfterGuess(currGuess, result)
+		possibleAnswerCount := len(state.possibleAnswers)
+		if possibleAnswerCount > 1 {
+			fmt.Println(possibleAnswerCount, "options remain.")
+		} else if possibleAnswerCount == 1 {
+			fmt.Println("Only 1 possible answer remains.")
+		} else {
+			fmt.Println("Error. No possible answers known. Sorry - I cannot help anymore.")
+			return
+		}
+
 	}
 	fmt.Println("Looks like you ran out of guesses. My fault.")
 }
