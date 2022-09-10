@@ -6,11 +6,13 @@ import (
 	"strings"
 )
 
+// GameState contains the data used to help play Peaks.
+// Recommend calling Initialize() to set up with all potential answers.
 type GameState struct {
-	possibleAnswers []string
-	bestGuess       string
-	lowestLetters   [5]byte
-	highestLetters  [5]byte
+	possibleAnswers []string // remaining possible correct answers
+	bestGuess       string   // the optimal next guess
+	lowestLetters   [5]byte  // the lowest possible letter for each position; starts at A
+	highestLetters  [5]byte  // the highest possible letter for each position; starts at Z
 }
 
 func (state *GameState) initPossibleAnswers(filename string) {
